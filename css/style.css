@@ -71,11 +71,14 @@ h2 {
   border-radius: 10px;
   text-decoration: none;
   font-weight: 900;
-  display: absolute !important;
+  display: block;
+  position: fixed;
   width: 20vw;
   text-align: center;
-  top: 50px;
-  right: 20px;
+  top: 77%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
 }
 
 .beli-btn:hover {
@@ -87,5 +90,10 @@ h2 {
 @media (max-width: 768px) {
   body {
     background: url('../img/bg_hp.jpg') center center / cover no-repeat fixed;
+  }
+
+  .beli-btn {
+    width: 50%;
+    top: 85%;
   }
 }
