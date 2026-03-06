@@ -60,6 +60,28 @@ h2 {
   width: 100vw;
   height: 100vh;
   cursor: pointer;
+  position: relative;
+}
+
+.beli-btn {
+  background: #29652f;
+  color: #ede3d6;
+  padding: 12px 28px;
+  font-weight: 700;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 900;
+  display: absolute !important;
+  width: 20vw;
+  text-align: center;
+  top: 50px;
+  right: 20px;
+}
+
+.beli-btn:hover {
+  filter: brightness(0.95);
+  background: #ede3d6;
+  color: #29652f;
 }
 
 @media (max-width: 768px) {
