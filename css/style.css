@@ -9,7 +9,7 @@
 }
 
 body {
-  background: url('../img/bg_pc.jpg') center center / cover no-repeat fixed;
+  background: url('../img/bg_laptop.png') center center / cover no-repeat fixed;
   color: #333333;
   font-family: "Open Sans", sans-serif;
   overflow-x: hidden;
@@ -59,41 +59,11 @@ h2 {
 #hero {
   width: 100vw;
   height: 100vh;
-  cursor: pointer;
   position: relative;
-}
-
-.beli-btn {
-  background: #29652f;
-  color: #ede3d6;
-  padding: 12px 28px;
-  font-weight: 700;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 900;
-  display: block;
-  position: fixed;
-  width: 20vw;
-  text-align: center;
-  top: 77%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border: none;
-}
-
-.beli-btn:hover {
-  filter: brightness(0.95);
-  background: #ede3d6;
-  color: #29652f;
 }
 
 @media (max-width: 768px) {
   body {
-    background: url('../img/bg_hp.jpg') center center / cover no-repeat fixed;
-  }
-
-  .beli-btn {
-    width: 50%;
-    top: 85%;
+    background: url('../img/bg_hp.png') center center / cover no-repeat fixed;
   }
 }
