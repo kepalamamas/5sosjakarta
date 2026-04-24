@@ -1,6 +1,44 @@
-﻿/*--------------------------------------------------------------
-# General
---------------------------------------------------------------*/
+﻿@font-face {
+  font-family: "Inter Black Italic";
+  src: url('../font/Inter-BlackItalic.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Railroad Gothic ATF";
+  src: url('../font/Railroad Gothic ATF.otf') format('opentype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Railroad Gothic ATF Medium";
+  src: url('../font/Railroad Gothic ATF Medium.otf') format('opentype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Railroad Gothic ATF Bold";
+  src: url('../font/Railroad Gothic ATF Bold.otf') format('opentype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Railroad Gothic ATF Heavy";
+  src: url('../font/Railroad Gothic ATF Heavy.otf') format('opentype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Railroad Gothic ATF Black";
+  src: url('../font/Railroad Gothic ATF Black.otf') format('opentype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rexlia Rg";
+  src: url('../font/Rexlia Rg.otf') format('opentype');
+  font-display: swap;
+}
 
 * {
   margin: 0;
@@ -9,12 +47,79 @@
 }
 
 body {
-  background: url('../img/bg_laptop.png') center center / cover no-repeat fixed;
+  background: url('../img/landscape/background.png') center center / cover no-repeat fixed;
   color: #333333;
   font-family: "Open Sans", sans-serif;
   overflow-x: hidden;
   position: relative;
   z-index: 0;
+}
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: rgba(55, 55, 55, 0.5);
+}
+
+.navbar {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-logo img {
+  display: block;
+  width: 110px;
+  height: auto;
+}
+
+.navbar-menu {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-menu a {
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 31px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.navbar-menu a:hover,
+.navbar-menu a:focus {
+  color: #ffffff;
+  opacity: 0.85;
+}
+
+.navbar-toggle {
+  display: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  width: 34px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.navbar-toggle span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin: 5px 0;
+  background-color: #ffffff;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 a {
@@ -57,13 +162,107 @@ h2 {
 }
 
 #hero {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   position: relative;
 }
 
-@media (max-width: 768px) {
-  body {
-    background: url('../img/bg_hp.png') center center / cover no-repeat fixed;
+.hero-picture {
+  display: block;
+  width: 100%;
+  height: 100vh;
+}
+
+.hero-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+#band {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+.band-picture {
+  display: block;
+  width: 100%;
+  height: 100vh;
+}
+
+.band-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 992px) {
+  .navbar {
+    padding: 24px 20px;
+  }
+
+  .navbar-logo img {
+    width: 84px;
+  }
+
+  .navbar-toggle {
+    display: block;
+  }
+
+  .navbar-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 20px;
+    min-width: 220px;
+    padding: 18px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    background: rgba(0, 0, 0, 0.82);
+    border-radius: 8px;
+  }
+
+  .navbar-menu a {
+    font-size: 23px;
+  }
+
+  .navbar.menu-open .navbar-menu {
+    display: flex;
+  }
+
+  .navbar.menu-open .navbar-toggle span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .navbar.menu-open .navbar-toggle span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .navbar.menu-open .navbar-toggle span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  .hero-picture {
+    height: 100vh;
+  }
+
+  #band {
+    min-height: auto;
+  }
+
+  .band-picture {
+    height: auto;
+  }
+
+  .band-image {
+    width: 100vw;
+    height: auto;
+    object-fit: contain;
   }
 }

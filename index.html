@@ -28,7 +28,40 @@
 </head>
 
 <body>
+  <header class="site-header">
+    <nav class="navbar" aria-label="Main navigation">
+      <a class="navbar-logo" href="#" aria-label="5sos Jakarta home">
+        <img src="img/cla_white.png" alt="CLA logo">
+      </a>
+
+      <button class="navbar-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false"
+        aria-controls="navbar-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="navbar-menu" id="navbar-menu">
+        <li><a href="#">HOME</a></li>
+        <li><a href="#">ABOUT</a></li>
+        <li><a href="#">TICKETS</a></li>
+        <li><a href="#">CONTACT US</a></li>
+      </ul>
+    </nav>
+  </header>
+
   <section id="hero">
+    <picture class="hero-picture">
+      <source media="(max-width: 992px)" srcset="img/portrait/hero.png">
+      <img class="hero-image" src="img/landscape/hero.png" alt="5sos Jakarta hero">
+    </picture>
+  </section>
+
+  <section id="band">
+    <picture class="band-picture">
+      <source media="(max-width: 992px)" srcset="img/portrait/band.png">
+      <img class="band-image" src="img/landscape/band.png" alt="5sos Jakarta band">
+    </picture>
   </section>
 
   <!-- JavaScript Libraries -->
