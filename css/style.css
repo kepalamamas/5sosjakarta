@@ -201,6 +201,352 @@ h2 {
   object-position: center;
 }
 
+.about-section {
+  width: 100%;
+  padding: 90px 24px 80px;
+}
+
+.about-content {
+  max-width: 1160px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-title {
+  margin: 0;
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.about-logo-text {
+  width: min(680px, 100%);
+  height: auto;
+  margin: 12px auto 18px;
+  display: block;
+}
+
+.about-description {
+  max-width: 980px;
+  margin: 0 auto;
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 30px;
+  line-height: 1.2;
+  text-align: justify;
+  text-align-last: center;
+  letter-spacing: 0.01em;
+}
+
+.artist-videos-title {
+  margin: 54px 0 24px;
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 57px;
+  line-height: 1;
+}
+
+.artist-videos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 34px;
+}
+
+.artist-video-link {
+  display: block;
+  background: #000000;
+  aspect-ratio: 16 / 9;
+}
+
+.artist-video-link img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000000;
+}
+
+.tickets-section {
+  width: 100%;
+  padding: 72px 24px 96px;
+}
+
+.tickets-content {
+  max-width: 1160px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.tickets-title {
+  margin: 0 0 24px;
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 56px;
+  line-height: 1;
+}
+
+.tickets-venue-image,
+.tickets-price-image {
+  display: block;
+  width: min(780px, 100%);
+  height: auto;
+  margin: 0 auto;
+}
+
+.tickets-price-image {
+  margin-top: 18px;
+}
+
+.tickets-cta-row {
+  margin-top: 34px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+.tickets-cta-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+}
+
+.tickets-cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 300px;
+  height: 50px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #f06b27;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+.tickets-cta-button i {
+  display: block;
+  line-height: 1;
+  margin: 0;
+}
+
+#hero,
+#band,
+#about-us,
+#tickets,
+#vip {
+  scroll-margin-top: 110px;
+}
+
+.tickets-cta-button:hover,
+.tickets-cta-button:focus {
+  color: #f06b27;
+  opacity: 0.9;
+}
+
+.tickets-cta-description {
+  margin: 12px 0 0;
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 1.3em;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.tickets-cta-subtext {
+  display: inline-block;
+  font-size: 0.8em;
+  line-height: 1.2;
+}
+
+.vip-section {
+  width: 100%;
+  padding: 40px 24px 96px;
+}
+
+.vip-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.vip-title {
+  margin: 0 0 28px;
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 56px;
+  line-height: 1;
+  text-align: center;
+}
+
+.vip-item {
+  border-top: 3px solid rgba(255, 255, 255, 0.9);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.9);
+}
+
+.vip-item + .vip-item {
+  margin-top: -3px;
+}
+
+.vip-trigger {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 24px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.vip-trigger-text {
+  font-family: "Railroad Gothic ATF", sans-serif;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: 0.005em;
+}
+
+.vip-trigger-icon {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+}
+
+.vip-trigger-icon::before,
+.vip-trigger-icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 4px;
+  background: #ffffff;
+  transform: translate(-50%, -50%);
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+.vip-trigger-icon::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.vip-item.is-open .vip-trigger-icon::after {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(90deg) scaleX(0);
+}
+
+.vip-panel {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.38s ease, opacity 0.28s ease, padding-bottom 0.38s ease;
+  padding: 0 24px;
+}
+
+.vip-item.is-open .vip-panel {
+  opacity: 1;
+  padding-bottom: 18px;
+}
+
+.vip-panel ul {
+  margin: 0;
+  padding: 0 0 0 22px;
+}
+
+.vip-panel li {
+  margin: 0 0 4px;
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF", sans-serif;
+  font-size: 25px;
+  line-height: 1.18;
+}
+
+.contact-section {
+  width: 100%;
+  padding: 48px 24px 120px;
+  background-color: #000000;
+}
+
+.contact-content {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 10%;
+}
+
+.contact-title {
+  margin: 0 0 18px;
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 56px;
+  line-height: 1;
+  text-align: center;
+}
+
+.contact-intro {
+  margin: 0 0 34px;
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 22px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.contact-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 640px;
+  margin: 0;
+}
+
+.contact-block {
+  text-align: left;
+}
+
+.contact-org-label {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.contact-email {
+  display: inline-block;
+  color: #ffff00;
+  font-family: "Railroad Gothic ATF Medium", sans-serif;
+  font-size: 22px;
+  line-height: 1;
+  text-decoration: none;
+  transition: opacity 0.28s ease;
+}
+
+.contact-email:hover,
+.contact-email:focus {
+  color: #ffff00;
+  opacity: 0.85;
+  text-decoration: underline;
+}
+
+#hero,
+#band,
+#about-us,
+#tickets,
+#vip,
+#contact-us {
+  scroll-margin-top: 110px;
+}
+
 @media (max-width: 992px) {
   .navbar {
     padding: 24px 20px;
@@ -264,5 +610,169 @@ h2 {
     width: 100vw;
     height: auto;
     object-fit: contain;
+  }
+
+  .about-section {
+    padding: 68px 16px 56px;
+  }
+
+  .about-title {
+    font-size: 38px;
+  }
+
+  .about-logo-text {
+    width: min(420px, 100%);
+    margin: 10px auto 14px;
+  }
+
+  .about-description {
+    max-width: 760px;
+    font-size: 20px;
+    line-height: 1.22;
+  }
+
+  .artist-videos-title {
+    margin: 40px 0 20px;
+    font-size: 42px;
+  }
+
+  .artist-videos-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .tickets-section {
+    padding: 58px 16px 72px;
+  }
+
+  .tickets-title {
+    margin-bottom: 18px;
+    font-size: 40px;
+  }
+
+  .tickets-venue-image,
+  .tickets-price-image {
+    width: 100%;
+  }
+
+  .tickets-price-image {
+    margin-top: 12px;
+  }
+
+  .tickets-cta-row {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .tickets-cta-column {
+    align-items: stretch;
+    width: auto;
+  }
+
+  .tickets-cta-button {
+    min-width: 0;
+    width: 100%;
+    height: 42px;
+    padding: 0 8px;
+    font-size: 19px;
+  }
+
+  .tickets-cta-description {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .tickets-cta-subtext {
+    font-size: 0.8em;
+  }
+
+  .vip-section {
+    padding: 32px 10px 64px;
+  }
+
+  .vip-title {
+    margin-bottom: 18px;
+    font-size: 34px;
+  }
+
+  .vip-item {
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+  }
+
+  .vip-item + .vip-item {
+    margin-top: -2px;
+  }
+
+  .vip-trigger {
+    gap: 8px;
+    padding: 10px 8px;
+  }
+
+  .vip-trigger-text {
+    font-size: 16px;
+    line-height: 1.12;
+  }
+
+  .vip-trigger-icon {
+    width: 18px;
+    height: 18px;
+    flex-basis: 18px;
+  }
+
+  .vip-trigger-icon::before,
+  .vip-trigger-icon::after {
+    width: 12px;
+    height: 2px;
+  }
+
+  .vip-panel {
+    padding: 0 8px;
+  }
+
+  .vip-item.is-open .vip-panel {
+    padding-bottom: 10px;
+  }
+
+  .vip-panel ul {
+    padding-left: 15px;
+  }
+
+  .vip-panel li {
+    margin-bottom: 3px;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .contact-section {
+    padding: 32px 10px 88px;
+  }
+
+  .contact-title {
+    margin-bottom: 10px;
+    font-size: 36px;
+  }
+
+  .contact-intro {
+    margin-bottom: 20px;
+    font-size: 17px;
+    line-height: 1.24;
+  }
+
+  .contact-blocks {
+    gap: 18px;
+    max-width: 100%;
+  }
+
+  .contact-org-label {
+    margin-bottom: 4px;
+    font-size: 15px;
+  }
+
+  .contact-email {
+    font-size: 15px;
   }
 }

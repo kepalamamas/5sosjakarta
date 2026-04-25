@@ -42,10 +42,10 @@
       </button>
 
       <ul class="navbar-menu" id="navbar-menu">
-        <li><a href="#">HOME</a></li>
-        <li><a href="#">ABOUT</a></li>
-        <li><a href="#">TICKETS</a></li>
-        <li><a href="#">CONTACT US</a></li>
+        <li><a href="#hero">HOME</a></li>
+        <li><a href="#about-us">ABOUT</a></li>
+        <li><a href="#tickets">TICKETS</a></li>
+        <li><a href="#contact-us">CONTACT US</a></li>
       </ul>
     </nav>
   </header>
@@ -62,6 +62,159 @@
       <source media="(max-width: 992px)" srcset="img/portrait/band.png">
       <img class="band-image" src="img/landscape/band.png" alt="5sos Jakarta band">
     </picture>
+  </section>
+
+  <section id="about-us" class="about-section">
+    <div class="about-content">
+      <h2 class="about-title">ABOUT</h2>
+      <img class="about-logo-text" src="img/5sosText.png" alt="5 Seconds of Summer">
+      <p class="about-description">5 SECONDS OF SUMMER, OFTEN SHORTENED TO 5SOS (PRONOUNCED "FIVE SAUCE"), ARE AN
+        AUSTRALIAN POP ROCK BAND FORMED IN SYDNEY IN 2011. THE GROUP CONSISTS OF LEAD VOCALIST AND RHYTHM GUITARIST
+        LUKE HEMMINGS, LEAD GUITARIST MICHAEL CLIFFORD, BASSIST CALUM HOOD, AND DRUMMER ASHTON IRWIN.</p>
+
+      <h3 class="artist-videos-title">ARTIST VIDEOS</h3>
+      <div class="artist-videos-grid">
+        <a class="artist-video-link" href="https://youtu.be/itHBJU_9gDI?si=54liLQphocpoQFqE" target="_blank" rel="noopener noreferrer" aria-label="5sos Artist video 1">
+          <img
+            src="img/vid1.jpg"
+            alt="5sos Artist video 1 thumbnail">
+        </a>
+        <a class="artist-video-link" href="https://youtu.be/PKcGR3hexig?si=nVQ055-eZo_XS8lD" target="_blank" rel="noopener noreferrer" aria-label="5sos Artist video 2">
+          <img
+            src="img/vid2.jpg"
+            alt="5sos Artist video 2 thumbnail">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="tickets" class="tickets-section">
+    <div class="tickets-content">
+      <h2 class="tickets-title">TICKETS</h2>
+
+      <img class="tickets-venue-image" src="img/landscape/venue.png" alt="Ticket venue map">
+      <img class="tickets-price-image" src="img/landscape/price.png" alt="Ticket price categories">
+
+      <div class="tickets-cta-row">
+        <div class="tickets-cta-column">
+          <a class="tickets-cta-button" href="#" aria-label="Artist presale link placeholder"><i>ARTIST PRESALE</i></a>
+          <p class="tickets-cta-description">TICKETS AVAILABLE ON<br><span class="tickets-cta-subtext">WEDNESDAY, 5TH MAY 2026<br>12.00 PM (GMT+7/JAKARTA TIME)</span></p>
+        </div>
+
+        <div class="tickets-cta-column">
+          <a class="tickets-cta-button" href="#" aria-label="General sales link placeholder"><i>GENERAL SALES</i></a>
+          <p class="tickets-cta-description">TICKETS AVAILABLE ON<br><span class="tickets-cta-subtext">WEDNESDAY, 6TH MAY 2025<br>12.00 PM (GMT+7/JAKARTA TIME)</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vip" class="vip-section">
+    <div class="vip-content">
+      <h2 class="vip-title">VIP EXPERIENCES</h2>
+
+      <div class="vip-accordion">
+        <article class="vip-item">
+          <button class="vip-trigger" type="button" aria-expanded="false" aria-controls="vip-panel-1" id="vip-trigger-1">
+            <span class="vip-trigger-text">VIP BOX ‘NO.1 OBSESSION’ SEAT PACKAGE</span>
+            <span class="vip-trigger-icon" aria-hidden="true"></span>
+          </button>
+          <div class="vip-panel" id="vip-panel-1" role="region" aria-labelledby="vip-trigger-1">
+            <ul>
+              <li>ONE VIP BOX SEATED TICKET</li>
+              <li>EXCLUSIVE NO.1 OBSESSION PACKAGE WRISTBAND</li>
+              <li>EXCLUSIVE ACCESS TO THE 5SOS PRE-SHOW SOUNDCHECK AND PRESS CONFERENCE WITH AN OPPORTUNITY TO ASK THE BAND A QUESTION*</li>
+              <li>EXCLUSIVE SPECIALLY DESIGNED MERCHANDISE ITEM</li>
+              <li>VIP LAMINATE AND LANYARD</li>
+              <li>PRE-SHOW TOUR MERCHANDISE SHOPPING OPPORTUNITY</li>
+              <li>EARLY ENTRY INTO THE VENUE</li>
+              <li>PHOTO OPPORTUNITY IN FRONT OF VIP WALL TO COMMEMORATE YOUR EVENING**</li>
+              <li>DEDICATED VIP ENTRANCE AND ON-SITE VIP TEAM</li>
+              <li>LOUNGE ACCESS</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="vip-item">
+          <button class="vip-trigger" type="button" aria-expanded="false" aria-controls="vip-panel-2" id="vip-trigger-2">
+            <span class="vip-trigger-text">CAT 1 VIP ‘NO.1 OBSESSION’ SEAT PACKAGE</span>
+            <span class="vip-trigger-icon" aria-hidden="true"></span>
+          </button>
+          <div class="vip-panel" id="vip-panel-2" role="region" aria-labelledby="vip-trigger-2">
+            <ul>
+              <li>ONE CAT 1 SEATED TICKET</li>
+              <li>EXCLUSIVE NO.1 OBSESSION PACKAGE WRISTBAND</li>
+              <li>EXCLUSIVE ACCESS TO THE 5SOS PRE-SHOW SOUNDCHECK AND PRESS CONFERENCE WITH AN OPPORTUNITY TO ASK THE BAND A QUESTION*</li>
+              <li>EXCLUSIVE SPECIALLY DESIGNED MERCHANDISE ITEM</li>
+              <li>VIP LAMINATE AND LANYARD</li>
+              <li>PRE-SHOW TOUR MERCHANDISE SHOPPING OPPORTUNITY</li>
+              <li>EARLY ENTRY INTO THE VENUE</li>
+              <li>PHOTO OPPORTUNITY IN FRONT OF VIP WALL TO COMMEMORATE YOUR EVENING**</li>
+              <li>DEDICATED VIP ENTRANCE AND ON-SITE VIP TEAM</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="vip-item">
+          <button class="vip-trigger" type="button" aria-expanded="false" aria-controls="vip-panel-3" id="vip-trigger-3">
+            <span class="vip-trigger-text">GA VIP ‘NO.1 OBSESSION’ PACKAGE</span>
+            <span class="vip-trigger-icon" aria-hidden="true"></span>
+          </button>
+          <div class="vip-panel" id="vip-panel-3" role="region" aria-labelledby="vip-trigger-3">
+            <ul>
+              <li>ONE GA TICKET</li>
+              <li>EXCLUSIVE NO.1 OBSESSION PACKAGE WRISTBAND</li>
+              <li>EXCLUSIVE ACCESS TO THE 5SOS PRE-SHOW SOUNDCHECK AND PRESS CONFERENCE WITH AN OPPORTUNITY TO ASK THE BAND A QUESTION*</li>
+              <li>EXCLUSIVE SPECIALLY DESIGNED MERCHANDISE ITEM</li>
+              <li>VIP LAMINATE AND LANYARD</li>
+              <li>PRE-SHOW TOUR MERCHANDISE SHOPPING OPPORTUNITY</li>
+              <li>EARLY ENTRY INTO THE VENUE</li>
+              <li>PHOTO OPPORTUNITY IN FRONT OF VIP WALL TO COMMEMORATE YOUR EVENING**</li>
+              <li>DEDICATED VIP ENTRANCE AND ON-SITE VIP TEAM</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="vip-item">
+          <button class="vip-trigger" type="button" aria-expanded="false" aria-controls="vip-panel-4" id="vip-trigger-4">
+            <span class="vip-trigger-text">TICKET UPGRADE - BITE THE APPLE</span>
+            <span class="vip-trigger-icon" aria-hidden="true"></span>
+          </button>
+          <div class="vip-panel" id="vip-panel-4" role="region" aria-labelledby="vip-trigger-4">
+            <ul>
+              <li>AVAILABLE FOR ALL TICKET CATEGORIES</li>
+              <li>EXCLUSIVE ACCESS TO THE 5SOS PRE-SHOW SOUNDCHECK AND PRESS CONFERENCE WITH AN OPPORTUNITY TO ASK THE BAND A QUESTION*</li>
+              <li>VIP LAMINATE AND LANYARD</li>
+              <li>PRE-SHOW TOUR MERCHANDISE SHOPPING OPPORTUNITY</li>
+              <li>EARLY ENTRY INTO THE VENUE**</li>
+              <li>PHOTO OPPORTUNITY IN FRONT OF VIP WALL TO COMMEMORATE YOUR EVENING***</li>
+              <li>DEDICATED VIP ENTRANCE AND ON-SITE VIP TEAM</li>
+              <li>PLEASE NOTE, YOU MUST HAVE PURCHASED A TICKET TO THE EVENT IN ORDER TO USE THIS UPGRADE TICKET.</li>
+              <li>THIS PACKAGE DOES NOT INCLUDE A TICKET TO THE SHOW.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact-us" class="contact-section">
+    <div class="contact-content">
+      <h2 class="contact-title">CONTACT US</h2>
+      <p class="contact-intro">FOR MORE INFORMATION ABOUT TICKET PURCHASE AND WHEELCHAIR ACCESSIBLE SETTING, PLEASE CONTACT</p>
+
+      <div class="contact-blocks">
+        <div class="contact-block">
+          <p class="contact-org-label">SOOTIX.COM</p>
+          <a class="contact-email" href="mailto:HELLO.SOOTIX@GMAIL.COM">HELLO.SOOTIX@GMAIL.COM</a>
+        </div>
+
+        <div class="contact-block">
+          <p class="contact-org-label">CHAKRA LIVE ASIA</p>
+          <a class="contact-email" href="mailto:CHAKRALIVEASIA@GMAIL.COM">CHAKRALIVEASIA@GMAIL.COM</a>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- JavaScript Libraries -->
