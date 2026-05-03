@@ -119,12 +119,101 @@ if (artistPresaleButton) {
     event.preventDefault();
 
     if (artistPresaleState.isOpen !== true) {
-      showArtistPresaleToast('Event not open yet');
+      showArtistPresaleToast('Event not open yet, refresh for updates');
       return;
     }
 
     if (artistPresaleState.linkUrl) {
       window.open(artistPresaleState.linkUrl, '_blank', 'noopener,noreferrer');
+    }
+  });
+}
+
+const generalSalesButton = document.querySelector('#general-sales-button');
+
+const generalSalesState = {
+  isOpen: false,
+  linkUrl: ''
+};
+
+let generalSalesToastTimeoutId = null;
+
+const showGeneralSalesToast = (message) => {
+  if (!message) {
+    return;
+  }
+
+  let toast = document.querySelector('#general-sales-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'general-sales-toast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    toast.style.position = 'fixed';
+    toast.style.left = '50%';
+    toast.style.bottom = '24px';
+    toast.style.transform = 'translateX(-50%) translateY(12px)';
+    toast.style.padding = '10px 14px';
+    toast.style.borderRadius = '8px';
+    toast.style.backgroundColor = 'rgba(17, 17, 17, 0.92)';
+    toast.style.color = '#ffffff';
+    toast.style.fontSize = '14px';
+    toast.style.lineHeight = '1.4';
+    toast.style.opacity = '0';
+    toast.style.pointerEvents = 'none';
+    toast.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+    toast.style.zIndex = '9999';
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+
+  if (generalSalesToastTimeoutId) {
+    window.clearTimeout(generalSalesToastTimeoutId);
+  }
+
+  generalSalesToastTimeoutId = window.setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(12px)';
+  }, 2200);
+};
+
+const preloadGeneralSalesData = async () => {
+  try {
+    const response = await fetch('https://sodtix.com/api/v1/public-events/link-url/I93nOjd8');
+    if (!response.ok) {
+      return;
+    }
+
+    const result = await response.json();
+    const data = result && result.data;
+
+    if (!data) {
+      return;
+    }
+
+    generalSalesState.isOpen = data.isOpen === true;
+    generalSalesState.linkUrl = typeof data.link_url === 'string' ? data.link_url : '';
+  } catch (error) {
+    // Intentionally no-op: keep default closed state when request fails.
+  }
+};
+
+if (generalSalesButton) {
+  preloadGeneralSalesData();
+
+  generalSalesButton.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    if (generalSalesState.isOpen !== true) {
+      showGeneralSalesToast('Event not open yet, refresh for updates');
+      return;
+    }
+
+    if (generalSalesState.linkUrl) {
+      window.open(generalSalesState.linkUrl, '_blank', 'noopener,noreferrer');
     }
   });
 }
