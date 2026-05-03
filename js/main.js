@@ -42,24 +42,89 @@ if (navbar && navLinks.length > 0) {
 const vipItems = document.querySelectorAll('.vip-item');
 const artistPresaleButton = document.querySelector('#artist-presale-button');
 
+const artistPresaleState = {
+  isOpen: false,
+  linkUrl: ''
+};
+
+let artistPresaleToastTimeoutId = null;
+
+const showArtistPresaleToast = (message) => {
+  if (!message) {
+    return;
+  }
+
+  let toast = document.querySelector('#artist-presale-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'artist-presale-toast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    toast.style.position = 'fixed';
+    toast.style.left = '50%';
+    toast.style.bottom = '24px';
+    toast.style.transform = 'translateX(-50%) translateY(12px)';
+    toast.style.padding = '10px 14px';
+    toast.style.borderRadius = '8px';
+    toast.style.backgroundColor = 'rgba(17, 17, 17, 0.92)';
+    toast.style.color = '#ffffff';
+    toast.style.fontSize = '14px';
+    toast.style.lineHeight = '1.4';
+    toast.style.opacity = '0';
+    toast.style.pointerEvents = 'none';
+    toast.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+    toast.style.zIndex = '9999';
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+
+  if (artistPresaleToastTimeoutId) {
+    window.clearTimeout(artistPresaleToastTimeoutId);
+  }
+
+  artistPresaleToastTimeoutId = window.setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(12px)';
+  }, 2200);
+};
+
+const preloadArtistPresaleData = async () => {
+  try {
+    const response = await fetch('https://sodtix.com/api/v1/public-events/link-url/Pk3nfysi7');
+    if (!response.ok) {
+      return;
+    }
+
+    const result = await response.json();
+    const data = result && result.data;
+
+    if (!data) {
+      return;
+    }
+
+    artistPresaleState.isOpen = data.isOpen === true;
+    artistPresaleState.linkUrl = typeof data.link_url === 'string' ? data.link_url : '';
+  } catch (error) {
+    // Intentionally no-op: keep default closed state when request fails.
+  }
+};
+
 if (artistPresaleButton) {
-  artistPresaleButton.addEventListener('click', async (event) => {
+  preloadArtistPresaleData();
+
+  artistPresaleButton.addEventListener('click', (event) => {
     event.preventDefault();
 
-    try {
-      const response = await fetch('https://sodtix.com/api/v1/public-events/link-url/Pk3nfysi7');
-      if (!response.ok) {
-        return;
-      }
+    if (artistPresaleState.isOpen !== true) {
+      showArtistPresaleToast('Event not open yet');
+      return;
+    }
 
-      const result = await response.json();
-      const data = result && result.data;
-
-      if (data && data.isOpen === true && typeof data.link_url === 'string' && data.link_url) {
-        window.open(data.link_url, '_blank', 'noopener,noreferrer');
-      }
-    } catch (error) {
-      // Intentionally no-op: button should do nothing when request fails.
+    if (artistPresaleState.linkUrl) {
+      window.open(artistPresaleState.linkUrl, '_blank', 'noopener,noreferrer');
     }
   });
 }
