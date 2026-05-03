@@ -40,6 +40,29 @@ if (navbar && navLinks.length > 0) {
 }
 
 const vipItems = document.querySelectorAll('.vip-item');
+const artistPresaleButton = document.querySelector('#artist-presale-button');
+
+if (artistPresaleButton) {
+  artistPresaleButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch('https://sodtix.com/api/v1/public-events/link-url/Pk3nfysi7');
+      if (!response.ok) {
+        return;
+      }
+
+      const result = await response.json();
+      const data = result && result.data;
+
+      if (data && data.isOpen === true && typeof data.link_url === 'string' && data.link_url) {
+        window.open(data.link_url, '_blank', 'noopener,noreferrer');
+      }
+    } catch (error) {
+      // Intentionally no-op: button should do nothing when request fails.
+    }
+  });
+}
 
 const setVipPanelState = (item, shouldOpen) => {
   const trigger = item.querySelector('.vip-trigger');
