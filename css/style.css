@@ -351,6 +351,12 @@ h2 {
   opacity: 0.9;
 }
 
+.tickets-cta-button[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .tickets-cta-description {
   margin: 12px 0 0;
   color: #ffffff;

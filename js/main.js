@@ -112,14 +112,25 @@ const preloadArtistPresaleData = async () => {
   }
 };
 
+const applyArtistPresaleState = () => {
+  if (!artistPresaleButton) {
+    return;
+  }
+  if (artistPresaleState.isOpen !== true) {
+    artistPresaleButton.setAttribute('aria-disabled', 'true');
+    artistPresaleButton.removeAttribute('href');
+  } else {
+    artistPresaleButton.removeAttribute('aria-disabled');
+  }
+};
+
 if (artistPresaleButton) {
-  preloadArtistPresaleData();
+  preloadArtistPresaleData().then(applyArtistPresaleState);
 
   artistPresaleButton.addEventListener('click', (event) => {
     event.preventDefault();
 
     if (artistPresaleState.isOpen !== true) {
-      showArtistPresaleToast('Event not open yet, refresh for updates');
       return;
     }
 
@@ -201,14 +212,25 @@ const preloadGeneralSalesData = async () => {
   }
 };
 
+const applyGeneralSalesState = () => {
+  if (!generalSalesButton) {
+    return;
+  }
+  if (generalSalesState.isOpen !== true) {
+    generalSalesButton.setAttribute('aria-disabled', 'true');
+    generalSalesButton.removeAttribute('href');
+  } else {
+    generalSalesButton.removeAttribute('aria-disabled');
+  }
+};
+
 if (generalSalesButton) {
-  preloadGeneralSalesData();
+  preloadGeneralSalesData().then(applyGeneralSalesState);
 
   generalSalesButton.addEventListener('click', (event) => {
     event.preventDefault();
 
     if (generalSalesState.isOpen !== true) {
-      showGeneralSalesToast('Event not open yet, refresh for updates');
       return;
     }
 
