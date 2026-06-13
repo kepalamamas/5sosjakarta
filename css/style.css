@@ -682,6 +682,13 @@ h2 {
     width: auto;
   }
 
+  .tickets-cta-column:last-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 100%;
+    max-width: calc((100% - 20px) / 2);
+  }
+
   .tickets-cta-button {
     min-width: 0;
     width: 100%;
