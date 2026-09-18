@@ -241,102 +241,152 @@ if (sodGroupPresaleButton) {
 }
 
 const generalSalesButton = document.querySelector('#general-sales-button2');
+const ticketStore = document.querySelector('#ticket-store');
+const categoryList = document.querySelector('#category-list');
+const ticketStoreMessage = document.querySelector('#ticket-store-message');
+const generalSalesStatus = document.querySelector('#general-sales-status');
+const checkoutModal = document.querySelector('#checkout-modal');
+const checkoutForm = document.querySelector('#checkout-form');
+const checkoutSummary = document.querySelector('#checkout-summary');
+const checkoutError = document.querySelector('#checkout-error');
+const passengerFields = document.querySelector('#passenger-fields');
+const sodtixConfig = window.SODTIX_CONFIG || {};
+const cartStorageKey = `sodtix-cart-${sodtixConfig.eventSlug || 'event'}`;
+let categories = [];
+let selectedCategory = null;
+let cart = JSON.parse(window.localStorage.getItem(cartStorageKey) || 'null');
 
-const generalSalesState = {
-  isOpen: false,
-  linkUrl: ''
+const formatPrice = (value) => new Intl.NumberFormat('id-ID', {
+  style: 'currency', currency: 'IDR', maximumFractionDigits: 0
+}).format(Number(value) || 0);
+
+const categoryStatus = (category) => {
+  const now = Date.now();
+  if (!category.is_active || (category.start_time && now < Date.parse(category.start_time)) ||
+    (category.end_time && now > Date.parse(category.end_time))) return 'not_available';
+  if (category.section_id) return 'seated';
+  if (Number(category.available_count) <= 0) return 'sold_out';
+  return 'available';
 };
 
-let generalSalesToastTimeoutId = null;
+const statusLabel = { available: 'AVAILABLE', sold_out: 'SOLD OUT', not_available: 'NOT AVAILABLE', seated: 'SEATED' };
 
-const showGeneralSalesToast = (message) => {
-  if (!message) {
+const saveCart = () => window.localStorage.setItem(cartStorageKey, JSON.stringify(cart));
+
+const showStoreMessage = (message, isError = false) => {
+  ticketStoreMessage.textContent = message;
+  ticketStoreMessage.classList.toggle('is-error', isError);
+};
+
+const renderCategories = () => {
+  categoryList.innerHTML = '';
+  const generalAdmission = categories.filter((category) => category.section_id == null);
+  if (!generalAdmission.length) {
+    showStoreMessage('No general admission categories are available for this event.', true);
     return;
   }
-
-  let toast = document.querySelector('#general-sales-toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'general-sales-toast';
-    toast.setAttribute('role', 'status');
-    toast.setAttribute('aria-live', 'polite');
-    toast.style.position = 'fixed';
-    toast.style.left = '50%';
-    toast.style.bottom = '24px';
-    toast.style.transform = 'translateX(-50%) translateY(12px)';
-    toast.style.padding = '10px 14px';
-    toast.style.borderRadius = '8px';
-    toast.style.backgroundColor = 'rgba(17, 17, 17, 0.92)';
-    toast.style.color = '#ffffff';
-    toast.style.fontSize = '14px';
-    toast.style.lineHeight = '1.4';
-    toast.style.opacity = '0';
-    toast.style.pointerEvents = 'none';
-    toast.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-    toast.style.zIndex = '9999';
-    document.body.appendChild(toast);
-  }
-
-  toast.textContent = message;
-  toast.style.opacity = '1';
-  toast.style.transform = 'translateX(-50%) translateY(0)';
-
-  if (generalSalesToastTimeoutId) {
-    window.clearTimeout(generalSalesToastTimeoutId);
-  }
-
-  generalSalesToastTimeoutId = window.setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(-50%) translateY(12px)';
-  }, 2200);
+  generalAdmission.forEach((category) => {
+    const status = categoryStatus(category);
+    const item = document.createElement('article');
+    item.className = 'category-card';
+    const minimum = category.is_ticket_limitation ? Math.max(1, Number(category.min_ticket) || 1) : 1;
+    const maximum = Math.min(Number(category.available_count), category.is_ticket_limitation ? Number(category.max_ticket) || 1 : 4);
+    item.innerHTML = `<div><p class="category-name"></p><p class="category-price"></p><p class="category-availability">${statusLabel[status]}</p></div><div class="category-action"><label>QTY <input class="category-quantity" type="number" min="${minimum}" max="${maximum}" value="${minimum}" ${status !== 'available' ? 'disabled' : ''}></label><button type="button" class="category-select" ${status !== 'available' ? 'disabled' : ''}>SELECT</button></div>`;
+    item.querySelector('.category-name').textContent = category.name;
+    item.querySelector('.category-price').textContent = formatPrice(category.price);
+    item.querySelector('.category-select').addEventListener('click', () => openCheckout(category, Number(item.querySelector('.category-quantity').value)));
+    categoryList.appendChild(item);
+  });
+  if (cart) showStoreMessage(`Saved selection: ${cart.quantity} x ${cart.category_name}. Availability will be checked again at checkout.`);
 };
 
-const preloadGeneralSalesData = async () => {
+const loadCategories = async () => {
+  generalSalesStatus.textContent = 'LOADING TICKETS...';
   try {
-    const response = await fetch('https://sodtix.com/api/v1/public-events/link-url/Bn318jwe');
-    if (!response.ok) {
-      return;
-    }
-
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 10000);
+    const response = await fetch(`${sodtixConfig.apiBase}/public-category?event_id=${encodeURIComponent(sodtixConfig.eventSlug)}`, { credentials: 'include', signal: controller.signal });
+    window.clearTimeout(timeoutId);
+    if (!response.ok) throw new Error('Unable to load ticket availability.');
     const result = await response.json();
-    const data = result && result.data;
-
-    if (!data) {
-      return;
-    }
-
-    generalSalesState.isOpen = data.isOpen === true;
-    generalSalesState.linkUrl = typeof data.link_url === 'string' ? data.link_url : '';
+    categories = Array.isArray(result.data) ? result.data : [];
+    generalSalesStatus.textContent = 'TICKETS AVAILABLE';
+    renderCategories();
   } catch (error) {
-    // Intentionally no-op: keep default closed state when request fails.
+    generalSalesStatus.textContent = 'UNAVAILABLE';
+    showStoreMessage('Ticket availability could not be loaded. Please refresh and try again.', true);
   }
 };
 
-const applyGeneralSalesState = () => {
-  if (!generalSalesButton) {
+const renderPassengers = (quantity, isNoTicketHolder) => {
+  passengerFields.innerHTML = '';
+  if (isNoTicketHolder) return;
+  const heading = document.createElement('p');
+  heading.className = 'passenger-heading';
+  heading.textContent = 'TICKET HOLDERS';
+  passengerFields.appendChild(heading);
+  for (let index = 0; index < quantity; index += 1) {
+    const field = document.createElement('label');
+    field.innerHTML = `Ticket ${index + 1} name<input name="passenger_${index}" autocomplete="off" required>`;
+    passengerFields.appendChild(field);
+  }
+};
+
+const openCheckout = async (category, requestedQuantity) => {
+  selectedCategory = category;
+  const minimum = category.is_ticket_limitation ? Math.max(1, Number(category.min_ticket) || 1) : 1;
+  const maximum = Math.min(Number(category.available_count), category.is_ticket_limitation ? Number(category.max_ticket) || 1 : 4);
+  const quantity = Math.max(minimum, Math.min(Number(requestedQuantity || (cart && cart.category_id === category.id ? cart.quantity : minimum)), maximum));
+  cart = { event_id: category.event_id, category_id: category.id, category_name: category.name, price: category.price, quantity };
+  saveCart();
+  checkoutSummary.textContent = `${category.name} | ${quantity} ticket${quantity === 1 ? '' : 's'} | ${formatPrice(category.price * quantity)}`;
+  renderPassengers(quantity, false);
+  checkoutError.textContent = '';
+  checkoutModal.hidden = false;
+  document.body.classList.add('checkout-open');
+};
+
+const closeCheckout = () => { checkoutModal.hidden = true; document.body.classList.remove('checkout-open'); };
+document.querySelectorAll('[data-close-checkout]').forEach((element) => element.addEventListener('click', closeCheckout));
+
+checkoutForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  checkoutError.textContent = '';
+  if (!sodtixConfig.payloadSecret || !window.CryptoJS) {
+    checkoutError.textContent = 'Checkout is not configured yet. The site owner must add the payload secret before payment can be submitted.';
     return;
   }
-  if (generalSalesState.isOpen !== true) {
-    generalSalesButton.setAttribute('aria-disabled', 'true');
-    generalSalesButton.removeAttribute('href');
-  } else {
-    generalSalesButton.removeAttribute('aria-disabled');
+  const freshCategory = categories.find((category) => category.id === selectedCategory.id);
+  if (!freshCategory || categoryStatus(freshCategory) !== 'available' || Number(freshCategory.available_count) < cart.quantity) {
+    checkoutError.textContent = 'Availability changed. Please close this form and choose your tickets again.';
+    return;
   }
-};
+  const values = Object.fromEntries(new FormData(checkoutForm).entries());
+  const passengers = Object.keys(values).filter((key) => key.startsWith('passenger_')).map((key) => ({ name: values[key] }));
+  const payload = { event_id: cart.event_id, detail: [{ category_id: cart.category_id, quantity: cart.quantity, category_name: cart.category_name }], voucher_code: values.voucher_code, orderInfo: { name: values.name, email: values.email, phone: values.phone, gender: values.gender, identity_number: values.identity_number }, passengers, is_aggree: values.is_aggree === 'on' };
+  const submitButton = checkoutForm.querySelector('.checkout-submit');
+  submitButton.disabled = true;
+  submitButton.textContent = 'PROCESSING...';
+  try {
+    const data = window.CryptoJS.AES.encrypt(JSON.stringify(payload), sodtixConfig.payloadSecret).toString();
+    const response = await fetch(`${sodtixConfig.apiBase}/categories/checkout`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+    const result = await response.json();
+    if (!response.ok || !result.payment_url) throw new Error(result.error || 'Checkout could not be completed.');
+    window.location.assign(result.payment_url);
+  } catch (error) {
+    checkoutError.textContent = error.message;
+    submitButton.disabled = false;
+    submitButton.textContent = 'CONTINUE TO PAYMENT';
+  }
+});
 
 if (generalSalesButton) {
-  preloadGeneralSalesData().then(applyGeneralSalesState);
+  loadCategories();
 
-  generalSalesButton.addEventListener('click', (event) => {
-    event.preventDefault();
-
-    if (generalSalesState.isOpen !== true) {
-      return;
-    }
-
-    if (generalSalesState.linkUrl) {
-      window.open(generalSalesState.linkUrl, '_blank', 'noopener,noreferrer');
-    }
+  generalSalesButton.addEventListener('click', () => {
+    ticketStore.hidden = false;
+    ticketStore.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    loadCategories();
   });
 }
 

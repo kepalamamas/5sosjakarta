@@ -35,6 +35,8 @@
     gtag('config', 'G-T9H4YVBVMD');
   </script>
 
+  <script src="js/config.js"></script>
+
   <!-- Meta Pixel Code -->
   <script>
     !function (f, b, e, v, n, t, s) {
@@ -135,13 +137,46 @@
         </div>
 
         <div class="tickets-cta-column">
-          <a id="general-sales-button2" class="tickets-cta-button" href="#" aria-label="General sales link placeholder"><i>GENERAL SALES</i></a>
-          <p class="tickets-cta-description">TICKETS AVAILABLE ON<br><span class="tickets-cta-subtext">SUNDAY, 21st
-              JUNE 2026<br>12.00 WIB</span></p>
+          <button id="general-sales-button2" class="tickets-cta-button" type="button"><i>GENERAL SALES</i></button>
+          <p id="general-sales-status" class="tickets-cta-description">CHECKING AVAILABILITY...</p>
         </div>
+      </div>
+
+      <div id="ticket-store" class="ticket-store" hidden>
+        <div class="ticket-store-heading">
+          <p class="ticket-store-kicker">GENERAL ADMISSION</p>
+          <h3>CHOOSE YOUR TICKETS</h3>
+          <p>Tickets are not reserved until checkout is completed.</p>
+        </div>
+        <div id="category-list" class="category-list" aria-live="polite"></div>
+        <div id="ticket-store-message" class="ticket-store-message" role="status"></div>
       </div>
     </div>
   </section>
+
+  <div id="checkout-modal" class="checkout-modal" hidden>
+    <div class="checkout-backdrop" data-close-checkout></div>
+    <section class="checkout-dialog" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+      <button class="checkout-close" type="button" aria-label="Close checkout" data-close-checkout>&times;</button>
+      <p class="ticket-store-kicker">SECURE CHECKOUT</p>
+      <h2 id="checkout-title">YOUR TICKETS</h2>
+      <p id="checkout-summary" class="checkout-summary"></p>
+      <form id="checkout-form">
+        <div class="checkout-fields">
+          <label>Full name<input name="name" autocomplete="name" required></label>
+          <label>Email<input name="email" type="email" autocomplete="email" required></label>
+          <label>Phone<input name="phone" type="tel" autocomplete="tel" required></label>
+          <label>Gender<select name="gender"><option value="">Select</option><option value="M">Male</option><option value="F">Female</option></select></label>
+          <label>Identity number<input name="identity_number" autocomplete="off"></label>
+          <label class="checkout-voucher">Voucher code<input name="voucher_code" autocomplete="off"></label>
+        </div>
+        <div id="passenger-fields" class="passenger-fields"></div>
+        <label class="agreement"><input name="is_aggree" type="checkbox" required> I agree to the ticket terms.</label>
+        <p id="checkout-error" class="checkout-error" role="alert"></p>
+        <button class="checkout-submit" type="submit">CONTINUE TO PAYMENT</button>
+      </form>
+    </section>
+  </div>
 
   <section id="vip" class="vip-section">
     <div class="vip-content">
@@ -263,6 +298,7 @@
   <!-- JavaScript Libraries -->
   <script src="lib/jquery/jquery.min.js"></script>
   <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 
   <!-- Template Main Javascript File -->
   <script src="js/main.js"></script>
