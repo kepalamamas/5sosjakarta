@@ -37,6 +37,9 @@
 
   <script src="js/config.js"></script>
 
+  <!-- Cloudflare Turnstile -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
   <!-- Meta Pixel Code -->
   <script>
     !function (f, b, e, v, n, t, s) {
@@ -172,6 +175,7 @@
         </div>
         <div id="passenger-fields" class="passenger-fields"></div>
         <label class="agreement"><input name="is_aggree" type="checkbox" required> I agree to the ticket terms.</label>
+        <div id="turnstile-widget" class="turnstile-widget"></div>
         <p id="checkout-error" class="checkout-error" role="alert"></p>
         <button class="checkout-submit" type="submit">CONTINUE TO PAYMENT</button>
       </form>

@@ -250,11 +250,14 @@ const checkoutForm = document.querySelector('#checkout-form');
 const checkoutSummary = document.querySelector('#checkout-summary');
 const checkoutError = document.querySelector('#checkout-error');
 const passengerFields = document.querySelector('#passenger-fields');
+const turnstileWidget = document.querySelector('#turnstile-widget');
 const sodtixConfig = window.SODTIX_CONFIG || {};
 const cartStorageKey = `sodtix-cart-${sodtixConfig.eventSlug || 'event'}`;
 let categories = [];
 let selectedCategory = null;
 let cart = JSON.parse(window.localStorage.getItem(cartStorageKey) || 'null');
+let turnstileWidgetId = null;
+let turnstileToken = '';
 
 const formatPrice = (value) => new Intl.NumberFormat('id-ID', {
   style: 'currency', currency: 'IDR', maximumFractionDigits: 0
@@ -332,6 +335,23 @@ const renderPassengers = (quantity, isNoTicketHolder) => {
   }
 };
 
+const renderTurnstile = () => {
+  turnstileToken = '';
+  if (!turnstileWidget || !sodtixConfig.turnstileSiteKey || !window.turnstile) return;
+  turnstileWidget.innerHTML = '';
+  turnstileWidgetId = window.turnstile.render(turnstileWidget, {
+    sitekey: sodtixConfig.turnstileSiteKey,
+    callback: (token) => { turnstileToken = token; },
+    'expired-callback': () => { turnstileToken = ''; },
+    'error-callback': () => { turnstileToken = ''; }
+  });
+};
+
+const resetTurnstile = () => {
+  turnstileToken = '';
+  if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
+};
+
 const openCheckout = async (category, requestedQuantity) => {
   selectedCategory = category;
   const minimum = category.is_ticket_limitation ? Math.max(1, Number(category.min_ticket) || 1) : 1;
@@ -344,6 +364,7 @@ const openCheckout = async (category, requestedQuantity) => {
   checkoutError.textContent = '';
   checkoutModal.hidden = false;
   document.body.classList.add('checkout-open');
+  renderTurnstile();
 };
 
 const closeCheckout = () => { checkoutModal.hidden = true; document.body.classList.remove('checkout-open'); };
@@ -361,6 +382,10 @@ checkoutForm.addEventListener('submit', async (event) => {
     checkoutError.textContent = 'Availability changed. Please close this form and choose your tickets again.';
     return;
   }
+  if (sodtixConfig.turnstileSiteKey && !turnstileToken) {
+    checkoutError.textContent = 'Please complete the bot check before continuing.';
+    return;
+  }
   const values = Object.fromEntries(new FormData(checkoutForm).entries());
   const passengers = Object.keys(values).filter((key) => key.startsWith('passenger_')).map((key) => ({ name: values[key] }));
   const payload = { event_id: cart.event_id, detail: [{ category_id: cart.category_id, quantity: cart.quantity, category_name: cart.category_name }], voucher_code: values.voucher_code, orderInfo: { name: values.name, email: values.email, phone: values.phone, gender: values.gender, identity_number: values.identity_number }, passengers, is_aggree: values.is_aggree === 'on' };
@@ -369,9 +394,12 @@ checkoutForm.addEventListener('submit', async (event) => {
   submitButton.textContent = 'PROCESSING...';
   try {
     const data = window.CryptoJS.AES.encrypt(JSON.stringify(payload), sodtixConfig.payloadSecret).toString();
-    const response = await fetch(`${sodtixConfig.apiBase}/categories/checkout`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+    const response = await fetch(`${sodtixConfig.apiBase}/categories/checkout`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data, turnstile_token: turnstileToken }) });
     const result = await response.json();
-    if (!response.ok || !result.payment_url) throw new Error(result.error || 'Checkout could not be completed.');
+    if (!response.ok || !result.payment_url) {
+      if (result.code === 'TURNSTILE_REFRESH_REQUIRED' || response.status === 403) resetTurnstile();
+      throw new Error(result.error || 'Checkout could not be completed.');
+    }
     window.location.assign(result.payment_url);
   } catch (error) {
     checkoutError.textContent = error.message;

@@ -21,10 +21,15 @@ if (!values.SODTIX_PAYLOAD_SECRET || values.SODTIX_PAYLOAD_SECRET === 'replace-w
   throw new Error('SODTIX_PAYLOAD_SECRET is missing from .env.');
 }
 
+if (!values.SODTIX_TURNSTILE_SITE_KEY) {
+  throw new Error('SODTIX_TURNSTILE_SITE_KEY is missing from .env.');
+}
+
 const config = {
   apiBase: values.SODTIX_API_BASE || 'https://sodtix.com/api/v1',
   eventSlug: values.SODTIX_EVENT_SLUG || '3bdd4ea2-843d-4bde-b4c8-45cd0d9673fe',
-  payloadSecret: values.SODTIX_PAYLOAD_SECRET
+  payloadSecret: values.SODTIX_PAYLOAD_SECRET,
+  turnstileSiteKey: values.SODTIX_TURNSTILE_SITE_KEY
 };
 
 fs.writeFileSync(outputPath, `window.SODTIX_CONFIG = ${JSON.stringify(config)};\n`);

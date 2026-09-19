@@ -444,6 +444,7 @@ h2 {
 .passenger-fields input { width: 100%; padding: 11px; border: 1px solid rgba(255, 255, 255, 0.5); background: #ffffff; color: #1a1a1a; }
 .passenger-fields { display: grid; gap: 12px; margin-top: 24px; }
 .agreement { display: flex; align-items: center; gap: 8px; margin: 24px 0; color: #ffffff; font-family: "Railroad Gothic ATF Medium", sans-serif; }
+.turnstile-widget { margin: 0 0 16px; }
 .checkout-error { min-height: 22px; margin: 0 0 12px; font-family: "Railroad Gothic ATF Medium", sans-serif; }
 .checkout-submit:disabled { opacity: 0.6; cursor: wait; }
 .checkout-open { overflow: hidden; }
