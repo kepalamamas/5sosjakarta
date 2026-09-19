@@ -258,6 +258,12 @@ let selectedCategory = null;
 let cart = JSON.parse(window.localStorage.getItem(cartStorageKey) || 'null');
 let turnstileWidgetId = null;
 let turnstileToken = '';
+let checkoutConfig = {
+  isNoTicketHolder: false,
+  isVoucherMandatory: false,
+  fields: {}
+};
+let checkoutConfigPromise;
 
 const formatPrice = (value) => new Intl.NumberFormat('id-ID', {
   style: 'currency', currency: 'IDR', maximumFractionDigits: 0
@@ -303,6 +309,15 @@ const renderCategories = () => {
   if (cart) showStoreMessage(`Saved selection: ${cart.quantity} x ${cart.category_name}. Availability will be checked again at checkout.`);
 };
 
+const fetchCategories = async (shouldRender = true) => {
+  const response = await fetch(`${sodtixConfig.apiBase}/public-category?event_id=${encodeURIComponent(sodtixConfig.eventSlug)}`, { credentials: 'include' });
+  if (!response.ok) throw new Error('Unable to load ticket availability.');
+  const result = await response.json();
+  categories = Array.isArray(result.data) ? result.data : [];
+  if (shouldRender) renderCategories();
+  return categories;
+};
+
 const loadCategories = async () => {
   generalSalesStatus.textContent = 'LOADING TICKETS...';
   try {
@@ -321,6 +336,42 @@ const loadCategories = async () => {
   }
 };
 
+const loadCheckoutConfig = async () => {
+  try {
+    const [eventResponse, formResponse] = await Promise.all([
+      fetch(`${sodtixConfig.apiBase}/public-events/${encodeURIComponent(sodtixConfig.eventSlug)}`, { credentials: 'include' }),
+      fetch(`${sodtixConfig.apiBase}/public-events/${encodeURIComponent(sodtixConfig.eventSlug)}/form-config`, { credentials: 'include' })
+    ]);
+    if (!eventResponse.ok || !formResponse.ok) throw new Error('Unable to load checkout configuration.');
+    const eventResult = await eventResponse.json();
+    const formResult = await formResponse.json();
+    const event = eventResult.data || {};
+    checkoutConfig = {
+      isNoTicketHolder: event.is_no_ticket_holder === true,
+      isVoucherMandatory: event.is_voucher_mandatory === true,
+      fields: (formResult.data && formResult.data.form_config && formResult.data.form_config.fields) ||
+        (formResult.form_config && formResult.form_config.fields) || {}
+    };
+  } catch (error) {
+    checkoutConfigPromise = null;
+  }
+};
+
+const applyFieldConfig = () => {
+  Object.entries(checkoutConfig.fields).forEach(([fieldKey, config]) => {
+    const input = checkoutForm.elements.namedItem(fieldKey);
+    if (!input || !config || typeof config !== 'object') return;
+    const field = input.closest('label');
+    if (field && config.label) field.firstChild.textContent = config.label;
+    input.required = config.required === true;
+    if (config.enabled === false && field) field.hidden = true;
+  });
+  const voucherInput = checkoutForm.elements.namedItem('voucher_code');
+  if (voucherInput) {
+    voucherInput.required = checkoutConfig.isVoucherMandatory || selectedCategory.is_voucher_mandatory === true;
+  }
+};
+
 const renderPassengers = (quantity, isNoTicketHolder) => {
   passengerFields.innerHTML = '';
   if (isNoTicketHolder) return;
@@ -328,9 +379,25 @@ const renderPassengers = (quantity, isNoTicketHolder) => {
   heading.className = 'passenger-heading';
   heading.textContent = 'TICKET HOLDERS';
   passengerFields.appendChild(heading);
+  const passengerKeys = Object.keys(checkoutConfig.fields).filter((key) =>
+    checkoutConfig.fields[key] && checkoutConfig.fields[key].enabled !== false &&
+    !['email', 'identity_number', 'voucher_code'].includes(key)
+  );
+  const keys = passengerKeys.length ? passengerKeys : ['name'];
   for (let index = 0; index < quantity; index += 1) {
-    const field = document.createElement('label');
-    field.innerHTML = `Ticket ${index + 1} name<input name="passenger_${index}" autocomplete="off" required>`;
+    const field = document.createElement('div');
+    field.className = 'passenger-group';
+    keys.forEach((key) => {
+      const config = checkoutConfig.fields[key] || {};
+      const label = document.createElement('label');
+      label.textContent = `${config.label || key.replaceAll('_', ' ')} ${index + 1}`;
+      const input = document.createElement('input');
+      input.name = `passenger_${index}_${key}`;
+      input.required = config.required !== false;
+      input.autocomplete = 'off';
+      label.appendChild(input);
+      field.appendChild(label);
+    });
     passengerFields.appendChild(field);
   }
 };
@@ -353,6 +420,7 @@ const resetTurnstile = () => {
 };
 
 const openCheckout = async (category, requestedQuantity) => {
+  if (checkoutConfigPromise) await checkoutConfigPromise;
   selectedCategory = category;
   const minimum = category.is_ticket_limitation ? Math.max(1, Number(category.min_ticket) || 1) : 1;
   const maximum = Math.min(Number(category.available_count), category.is_ticket_limitation ? Number(category.max_ticket) || 1 : 4);
@@ -360,7 +428,8 @@ const openCheckout = async (category, requestedQuantity) => {
   cart = { event_id: category.event_id, category_id: category.id, category_name: category.name, price: category.price, quantity };
   saveCart();
   checkoutSummary.textContent = `${category.name} | ${quantity} ticket${quantity === 1 ? '' : 's'} | ${formatPrice(category.price * quantity)}`;
-  renderPassengers(quantity, false);
+  renderPassengers(quantity, checkoutConfig.isNoTicketHolder);
+  applyFieldConfig();
   checkoutError.textContent = '';
   checkoutModal.hidden = false;
   document.body.classList.add('checkout-open');
@@ -377,6 +446,12 @@ checkoutForm.addEventListener('submit', async (event) => {
     checkoutError.textContent = 'Checkout is not configured yet. The site owner must add the payload secret before payment can be submitted.';
     return;
   }
+  try {
+    await fetchCategories(false);
+  } catch (error) {
+    checkoutError.textContent = 'Ticket availability could not be refreshed. Please try again.';
+    return;
+  }
   const freshCategory = categories.find((category) => category.id === selectedCategory.id);
   if (!freshCategory || categoryStatus(freshCategory) !== 'available' || Number(freshCategory.available_count) < cart.quantity) {
     checkoutError.textContent = 'Availability changed. Please close this form and choose your tickets again.';
@@ -387,14 +462,20 @@ checkoutForm.addEventListener('submit', async (event) => {
     return;
   }
   const values = Object.fromEntries(new FormData(checkoutForm).entries());
-  const passengers = Object.keys(values).filter((key) => key.startsWith('passenger_')).map((key) => ({ name: values[key] }));
-  const payload = { event_id: cart.event_id, detail: [{ category_id: cart.category_id, quantity: cart.quantity, category_name: cart.category_name }], voucher_code: values.voucher_code, orderInfo: { name: values.name, email: values.email, phone: values.phone, gender: values.gender, identity_number: values.identity_number }, passengers, is_aggree: values.is_aggree === 'on' };
+  const passengersByIndex = {};
+  Object.keys(values).filter((key) => key.startsWith('passenger_')).forEach((key) => {
+    const [, index, field] = key.split('_');
+    if (!passengersByIndex[index]) passengersByIndex[index] = {};
+    passengersByIndex[index][field] = values[key];
+  });
+  const passengers = Object.values(passengersByIndex);
+  const payload = { event_id: cart.event_id, detail: [{ category_id: cart.category_id, quantity: cart.quantity, category_name: cart.category_name }], voucher_code: values.voucher_code, orderInfo: { name: values.name, email: values.email, phone: values.phone, gender: values.gender, identity_number: values.identity_number }, passengers, is_aggree: values.is_aggree === 'on', turnstile_token: turnstileToken };
   const submitButton = checkoutForm.querySelector('.checkout-submit');
   submitButton.disabled = true;
   submitButton.textContent = 'PROCESSING...';
   try {
     const data = window.CryptoJS.AES.encrypt(JSON.stringify(payload), sodtixConfig.payloadSecret).toString();
-    const response = await fetch(`${sodtixConfig.apiBase}/categories/checkout`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data, turnstile_token: turnstileToken }) });
+    const response = await fetch(`${sodtixConfig.apiBase}/categories/checkout`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
     const result = await response.json();
     if (!response.ok || !result.payment_url) {
       if (result.code === 'TURNSTILE_REFRESH_REQUIRED' || response.status === 403) resetTurnstile();
@@ -409,6 +490,7 @@ checkoutForm.addEventListener('submit', async (event) => {
 });
 
 if (generalSalesButton) {
+  checkoutConfigPromise = loadCheckoutConfig();
   loadCategories();
 
   generalSalesButton.addEventListener('click', () => {
